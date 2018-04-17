@@ -1,0 +1,10 @@
+.jconfirm-box {
+	color:#393939;
+}
+.buttons .btn-default {
+	background-color: #428bca !important;
+	border-color: #428bca;
+}
+#sample-table-2_filter {
+	display:none;
+}

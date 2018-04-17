@@ -1,0 +1,224 @@
+/*
+Ajax 三级省市联动
+
+settings 参数说明
+-----
+url:省市数据josn文件路径
+prov:默认省份
+city:默认城市
+dist:默认地区（县）
+nodata:无数据状态
+required:必选项
+------------------------------ */
+(function($){
+	$.fn.citySelect=function(settings){
+		
+		if(this.length<1){return;};
+		
+		// 默认值
+		settings=$.extend({
+			url:"js/city.min.js",
+			prov:null,
+			city:null,
+			dist:null,
+			nodata:null,
+			required:true,
+			cityback:function(){}
+		},settings);
+
+		var box_obj=this;
+		var prov_obj=box_obj.find(".prov");
+		var city_obj=box_obj.find(".city");
+		var dist_obj=box_obj.find(".dist");
+		var prov_val=settings.prov;
+		var city_val=settings.city;
+		var dist_val=settings.dist;
+		var select_prehtml=(settings.required) ? "" : "<option value='0'>请选择</option>";
+		var city_json;
+		var isCall = false;
+		
+		// 赋值市级函数
+		var cityStart=function(){
+			var prov_id=prov_obj.get(0).selectedIndex;
+			if(!settings.required){
+				prov_id--;
+			};
+			city_obj.empty().attr("disabled",true);
+			dist_obj.empty().attr("disabled",true);
+
+			if(prov_id<0||typeof(city_json.citylist[prov_id].c)=="undefined"){
+				if(settings.nodata=="none"){
+					city_obj.css("display","none");
+					dist_obj.css("display","none");
+				}else if(settings.nodata=="hidden"){
+					city_obj.css("visibility","hidden");
+					dist_obj.css("visibility","hidden");
+				};
+				return;
+			};
+			
+			// 遍历赋值市级下拉列表
+			temp_html=select_prehtml;
+			$.each(city_json.citylist[prov_id].c,function(i,city){
+				temp_html+="<option value='"+city.no+"'>"+city.n+"</option>";
+			});
+			city_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""});
+			//加载后的回调
+			if(!isCall){
+			settings.cityback();isCall=true;
+			}
+		
+			
+			distStart();
+		};
+
+		// 赋值地区（县）函数
+		var distStart=function(){
+			var prov_id=prov_obj.get(0).selectedIndex;
+			var city_id=city_obj.get(0).selectedIndex;
+			if(!settings.required){
+				prov_id--;
+				city_id--;
+			};
+			dist_obj.empty().attr("disabled",true);
+
+			if(prov_id<0||city_id<0||typeof(city_json.citylist[prov_id].c[city_id].a)=="undefined"){
+				if(settings.nodata=="none"){
+					dist_obj.css("display","none");
+				}else if(settings.nodata=="hidden"){
+					dist_obj.css("visibility","hidden");
+				};
+				return;
+			};
+			
+			// 遍历赋值市级下拉列表
+			temp_html=select_prehtml;
+			$.each(city_json.citylist[prov_id].c[city_id].a,function(i,dist){
+				temp_html+="<option value='"+dist.no+"'>"+dist.s+"</option>";
+			});
+			dist_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""});
+		};
+
+		var init=function(){
+			// 遍历赋值省份下拉列表
+			temp_html=select_prehtml;
+			$.each(city_json.citylist,function(i,prov){
+				temp_html+="<option value='"+prov.no+"'>"+prov.p+"</option>";
+			});
+			prov_obj.html(temp_html);
+
+			// 若有传入省份与市级的值，则选中。（setTimeout为兼容IE6而设置）
+			setTimeout(function(){
+				if(settings.prov!=null){
+					prov_obj.val(settings.prov);
+					cityStart();
+					setTimeout(function(){
+						if(settings.city!=null){
+							city_obj.val(settings.city);
+							distStart();
+							setTimeout(function(){
+								if(settings.dist!=null){
+									dist_obj.val(settings.dist);
+								};
+							},1);
+						};
+					},1);
+				};
+			},1);
+
+			// 选择省份时发生事件
+			prov_obj.bind("change",function(){
+				cityStart();
+				var prov_txt = $("#city_4 .prov").find("option:selected").text();//省
+			    var city_txt = $("#city_4 .city").find("option:selected").text();//市
+			    var dist_txt = $("#city_4 .dist").find("option:selected").text();//区
+		        var prov = $("#city_4 .prov").val();//省
+		        var city = $("#city_4 .city").val();//市
+		        var dist = $("#city_4 .dist").val();//区
+			    var new_detail = prov_txt+city_txt+dist_txt;
+			    var new_area = prov+','+city+','+dist; 
+			    $("#detail").val(new_detail);
+			    $("#area_no").val(new_area);
+			    $("#city").val(city_txt);
+			    
+
+				var prov1_txt = $("#city_5 .prov").find("option:selected").text();//省
+			    var city1_txt = $("#city_5 .city").find("option:selected").text();//市
+			    var dist1_txt = $("#city_5 .dist").find("option:selected").text();//区
+		        var prov1 = $("#city_5 .prov").val();//省
+		        var city1 = $("#city_5 .city").val();//市
+		        var dist1 = $("#city_5 .dist").val();//区
+			    var news_detail = prov1_txt+city1_txt+dist1_txt;
+			    var news_area = prov1+','+city1+','+dist1; 
+			    $("#c_detail").val(news_detail);
+			    $("#c_area_no").val(news_area);
+			});
+
+			// 选择市级时发生事件
+			city_obj.bind("change",function(){
+				distStart();
+				var prov_txt = $("#city_4 .prov").find("option:selected").text();//省
+			    var city_txt = $("#city_4 .city").find("option:selected").text();//市
+			    var dist_txt = $("#city_4 .dist").find("option:selected").text();//区
+		        var prov = $("#city_4 .prov").val();//省
+		        var city = $("#city_4 .city").val();//市
+		        var dist = $("#city_4 .dist").val();//区
+			    var new_detail = prov_txt+city_txt+dist_txt;
+			    var new_area = prov+','+city+','+dist;
+			    $("#detail").val(new_detail);
+			    $("#area_no").val(new_area);
+			    $("#city").val(city_txt);
+			    
+			    var prov1_txt = $("#city_5 .prov").find("option:selected").text();//省
+			    var city1_txt = $("#city_5 .city").find("option:selected").text();//市
+			    var dist1_txt = $("#city_5 .dist").find("option:selected").text();//区
+		        var prov1 = $("#city_5 .prov").val();//省
+		        var city1 = $("#city_5 .city").val();//市
+		        var dist1 = $("#city_5 .dist").val();//区
+			    var news_detail = prov1_txt+city1_txt+dist1_txt;
+			    var news_area = prov1+','+city1+','+dist1; 
+			    $("#c_detail").val(news_detail);
+			    $("#c_area_no").val(news_area);
+			});
+			
+			// 选择区级时发生事件
+			dist_obj.bind("change",function(){
+				var prov_txt = $("#city_4 .prov").find("option:selected").text();//省
+			    var city_txt = $("#city_4 .city").find("option:selected").text();//市
+			    var dist_txt = $("#city_4 .dist").find("option:selected").text();//区
+		        var prov = $("#city_4 .prov").val();//省
+		        var city = $("#city_4 .city").val();//市
+		        var dist = $("#city_4 .dist").val();//区
+			    var new_detail = prov_txt+city_txt+dist_txt;
+			    var new_area = prov+','+city+','+dist;
+			    $("#detail").val(new_detail);
+			    $("#area_no").val(new_area);
+			    
+			    var prov1_txt = $("#city_5 .prov").find("option:selected").text();//省
+			    var city1_txt = $("#city_5 .city").find("option:selected").text();//市
+			    var dist1_txt = $("#city_5 .dist").find("option:selected").text();//区
+		        var prov1 = $("#city_5 .prov").val();//省
+		        var city1 = $("#city_5 .city").val();//市
+		        var dist1 = $("#city_5 .dist").val();//区
+			    var news_detail = prov1_txt+city1_txt+dist1_txt;
+			    var news_area = prov1+','+city1+','+dist1; 
+			    $("#c_detail").val(news_detail);
+			    $("#c_area_no").val(news_area);
+			    
+			    
+			});
+		};
+
+		// 设置省市json数据
+		if(typeof(settings.url)=="string"){
+			$.getJSON(settings.url,function(json){
+				city_json=json;
+				
+				init();
+			});
+		}else{
+			city_json=settings.url;
+			init();
+		};
+	};
+})(jQuery);

@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} \.(php|js|ico|gif|jpg|png|css|txt|xml|mp4|cur|doc|html|swf|jpeg|exe|dll|pdf|flv|svg|woff|ttf|json)$
+RewriteRule ^.*$ - [NC,L]
+#RewriteRule ^en(.*)$ $1
+RewriteRule ^.*$ index.php [NC,L]

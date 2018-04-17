@@ -1,0 +1,50 @@
+.ser_intro {
+  position: absolute;
+  width: 250px;
+  left: -245px;
+  top: 12px;
+  color: #333;
+  font-size: 13px;
+  line-height: 22px;
+  padding: 5px;
+  background: #fff;
+  display: none;
+  z-index: 4;
+  text-align: left;
+  border: 1px solid #272636;
+}
+.ser_intro i {
+	  position: absolute;
+	  right: -10px;
+	  top: 7px;
+	  width: 10px;
+	  height: 15px;
+	  display: block;
+	  background: url(../images/arrow_word.png) left top;
+}
+.ser_id {
+	padding-left: 10px;
+    font-size: initial;
+}
+.ajax_table tr td {
+	border:1px solid #ddd;
+}
+.row-details.row-details-close {
+ 	background: url("../images/datatable-row-openclose.png") no-repeat 0 0;
+}
+.row-details {
+  margin-top: 3px;
+  display: inline-block;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+.row-details.row-details-open {
+		background: url("../images/datatable-row-openclose.png") no-repeat 0 -23px !important;
+}
+.bottom-ky{}
+.btn-pink2{background-color: #25639e;width: 150px;height: 99px;display: inline-block;text-align: center;line-height: 99px;color: #fff;font-size: 18px;}
+.btn-pink3{background-color: #E0FFFF;width: 150px;height: 99px;display: inline-block;text-align: center;line-height: 99px;color: #000;font-size: 18px;}
+.btn-pink4{background-color: #E0FFFF;width: 150px;height: 99px;display: inline-block;text-align: center;line-height: 99px;color: #000;font-size: 18px;}
+.btn-pink10{background-color: #FFE4E1;width: 150px;height: 129px;display: inline-block;text-align: center;color: #000;font-size: 18px;line-height: 30px;}
+.withtop{width: 140px;text-align: center;display: inline-block;}
